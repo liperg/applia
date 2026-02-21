@@ -38,13 +38,18 @@ function ExamsStack() {
 function MainDrawer({ onLogout }: { onLogout: () => void }) {
   const [displayName] = React.useState<string | null>('Test User');
 
-  const drawerContent = (props: any) => (
-    <DrawerContent
-      {...props}
-      userDisplayName={displayName}
-      onEditProfile={() => {}}
-      onLogout={onLogout}
-    />
+  const CustomDrawerContent = React.useCallback(
+    (drawerProps: any) => (
+      <DrawerContent
+        {...drawerProps}
+        userDisplayName={displayName}
+        userEmail={null}
+        memberSince="January 2024"
+        onEditProfile={() => {}}
+        onLogout={onLogout}
+      />
+    ),
+    [displayName, onLogout]
   );
 
   return (
@@ -58,7 +63,7 @@ function MainDrawer({ onLogout }: { onLogout: () => void }) {
         drawerInactiveTintColor: colors.textSecondary,
         drawerLabelStyle: typography.body,
       }}
-      drawerContent={drawerContent}
+      drawerContent={CustomDrawerContent}
     >
       <Drawer.Screen
         name="Home"

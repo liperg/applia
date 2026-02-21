@@ -5,3 +5,4 @@ export { Badge } from './Badge';
 export { ListItem } from './ListItem';
 export { Input } from './Input';
 export { Switch } from './Switch';
+export { ProfileContent } from './ProfileContent';

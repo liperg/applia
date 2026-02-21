@@ -1,18 +1,20 @@
 import React from 'react';
 import { View, Text, StyleSheet, Alert } from 'react-native';
 import { DrawerContentScrollView, DrawerContentComponentProps } from '@react-navigation/drawer';
-import { Button } from '../components';
+import { Button, ProfileContent } from '../components';
 import { colors, spacing, typography } from '../theme';
 
 type Props = DrawerContentComponentProps & {
   userDisplayName?: string | null;
+  userEmail?: string | null;
+  memberSince?: string | null;
   onEditProfile: () => void;
   onLogout: () => void;
 };
 
-export function DrawerContent(
-  { navigation, userDisplayName, onEditProfile, onLogout }: Props
-) {
+export function DrawerContent(props: Props) {
+  const { navigation, userDisplayName, userEmail, memberSince, onEditProfile, onLogout } = props;
+
   const handleLogout = () => {
     Alert.alert(
       'Log out',
@@ -25,34 +27,28 @@ export function DrawerContent(
   };
 
   return (
-    <DrawerContentScrollView style={styles.container}>
-      <View style={styles.profile}>
-        <View style={styles.avatar} />
-        <Text style={styles.name} numberOfLines={1}>
-          {userDisplayName ?? 'User'}
-        </Text>
-        <Button title="Edit profile" variant="secondary" onPress={onEditProfile} style={styles.editBtn} />
-      </View>
+    <DrawerContentScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
+      {/* Conteúdo da tela de Profile exibido no menu lateral (não é uma tela) */}
+      <ProfileContent
+        userDisplayName={userDisplayName}
+        userEmail={userEmail}
+        memberSince={memberSince}
+        compact
+      />
+
+      {/* Opções do menu abaixo do profile */}
       <View style={styles.menu}>
-        <Text
-          style={styles.menuItem}
-          onPress={() => navigation.navigate('Home')}
-        >
+        <Text style={styles.menuItem} onPress={() => navigation.navigate('Home')}>
           Home
         </Text>
-        <Text
-          style={styles.menuItem}
-          onPress={() => navigation.navigate('Exams')}
-        >
+        <Text style={styles.menuItem} onPress={() => navigation.navigate('Exams')}>
           Exams
         </Text>
-        <Text
-          style={styles.menuItem}
-          onPress={() => navigation.navigate('Settings')}
-        >
+        <Text style={styles.menuItem} onPress={() => navigation.navigate('Settings')}>
           Settings
         </Text>
       </View>
+
       <View style={styles.footer}>
         <Button title="Log out" variant="danger" onPress={handleLogout} />
       </View>
@@ -65,28 +61,14 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.surface,
   },
-  profile: {
-    padding: spacing.lg,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.border,
-  },
-  avatar: {
-    width: 64,
-    height: 64,
-    borderRadius: 32,
-    backgroundColor: colors.primarySoft,
-    marginBottom: spacing.sm,
-  },
-  name: {
-    ...typography.subtitle,
-    color: colors.textPrimary,
-    marginBottom: spacing.sm,
-  },
-  editBtn: {
-    alignSelf: 'flex-start',
+  contentContainer: {
+    flexGrow: 1,
+    paddingBottom: spacing.xl,
   },
   menu: {
     padding: spacing.lg,
+    borderTopWidth: 1,
+    borderTopColor: colors.border,
   },
   menuItem: {
     ...typography.body,
