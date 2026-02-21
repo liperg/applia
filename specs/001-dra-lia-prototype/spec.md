@@ -3,7 +3,20 @@
 **Feature Branch**: `001-dra-lia-prototype`  
 **Created**: 2026-02-20  
 **Status**: Draft  
-**Input**: User description: "Build Dra Lia prototype from MVP, architecture and design docs"
+**Input**: User description: "Specify Dra Lia project from MVP, architecture and design docs"
+
+## Specification Sources
+
+This specification is derived from and must stay aligned with:
+
+| Document | Purpose |
+|----------|---------|
+| `.specify/memory/constitution.md` | Governance, SpecKit workflow, monorepo boundaries |
+| `docs/mvp.md` | Product scope, functional and non-functional requirements |
+| `docs/architecture.md` | Stack, auth, PDF/worker flow, document lifecycle, JSON contracts |
+| `docs/design.md` | UX principles, visual tokens, iconography, consistency rules |
+
+All requirements below trace to these sources. Implementation MUST follow SpecKit workflow: specify → clarify (when needed) → plan → tasks → implement.
 
 ## Clarifications
 

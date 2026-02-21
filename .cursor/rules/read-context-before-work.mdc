@@ -1,0 +1,21 @@
+---
+description: Read project context (constitution, MVP, architecture, design) before starting any work
+alwaysApply: true
+---
+
+# Read Context Before Starting Work
+
+Before starting any implementation, planning, or coding task, you **MUST** read the following files to align with project governance, scope, and standards:
+
+1. **`.specify/memory/constitution.md`** — Core principles (English-only artifacts, SpecKit-first delivery, simplicity, MVP velocity, clean code), monorepo boundaries, and delivery workflow.
+2. **`docs/mvp.md`** — MVP scope, functional and non-functional requirements, and out-of-scope items.
+3. **`docs/architecture.md`** — Stack (backend/frontend/infra), auth, PDF/worker flow, document lifecycle, JSON contracts, and error handling.
+4. **`docs/design.md`** — UX principles, color palette, typography, iconography (Phosphor), Craft React Native usage, and consistency rules.
+
+Use the content of these documents to:
+- Follow SpecKit workflow and constitution principles.
+- Stay within MVP scope and architecture decisions.
+- Apply design tokens and patterns consistently.
+- Avoid rework and violations that would be caught by project reviews.
+
+If you have not read these files in the current session, read them at the start of your work before proposing or implementing changes.
