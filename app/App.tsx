@@ -3,9 +3,7 @@ import { StatusBar } from 'expo-status-bar';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createDrawerNavigator } from '@react-navigation/drawer';
-import { OnboardingScreen } from './src/screens/onboarding/OnboardingScreen';
-import { LoginScreen } from './src/screens/LoginScreen';
-import { SignupScreen } from './src/screens/SignupScreen';
+import { OnboardingSignUpScreen } from './src/screens/onboarding/OnboardingSignUpScreen';
 import { HomeScreen } from './src/screens/HomeScreen';
 import { ExamsScreen } from './src/screens/ExamsScreen';
 import { ImportScreen } from './src/screens/ImportScreen';
@@ -98,52 +96,35 @@ function MainDrawer({ onLogout }: { onLogout: () => void }) {
 }
 
 export default function App() {
-  const [hasCompletedOnboarding, setHasCompletedOnboarding] = React.useState(false);
   const [isLoggedIn, setIsLoggedIn] = React.useState(false);
+
+  const handleSignIn = React.useCallback(() => {
+    setAuthToken('dev-token');
+    setIsLoggedIn(true);
+  }, []);
+
+  const handleLogout = React.useCallback(() => {
+    setAuthToken(null);
+    setIsLoggedIn(false);
+  }, []);
 
   return (
     <NavigationContainer>
       <StatusBar style="dark" />
       <Stack.Navigator screenOptions={{ headerShown: false }}>
-        {!hasCompletedOnboarding ? (
-          <Stack.Screen name="Onboarding">
-            {(props) => (
-              <OnboardingScreen
-                {...props}
-                onComplete={() => setHasCompletedOnboarding(true)}
+        {!isLoggedIn ? (
+          <Stack.Screen name="OnboardingSignUp">
+            {() => (
+              <OnboardingSignUpScreen
+                onContinueWithPhone={() => handleSignIn()}
+                onContinueWithGoogle={handleSignIn}
+                onContinueWithApple={handleSignIn}
               />
             )}
           </Stack.Screen>
-        ) : !isLoggedIn ? (
-          <>
-            <Stack.Screen name="Login">
-              {(props) => (
-                <LoginScreen
-                  {...props}
-                  onSignIn={() => {
-                  setAuthToken('dev-token');
-                  setIsLoggedIn(true);
-                }}
-                  onNavigateToSignup={() => props.navigation.navigate('Signup')}
-                />
-              )}
-            </Stack.Screen>
-            <Stack.Screen name="Signup">
-              {(props) => (
-                <SignupScreen
-                  {...props}
-                  onSignUp={() => {
-                  setAuthToken('dev-token');
-                  setIsLoggedIn(true);
-                }}
-                  onNavigateToLogin={() => props.navigation.goBack()}
-                />
-              )}
-            </Stack.Screen>
-          </>
         ) : (
           <Stack.Screen name="Main">
-            {() => <MainDrawer onLogout={() => { setAuthToken(null); setIsLoggedIn(false); }} />}
+            {() => <MainDrawer onLogout={handleLogout} />}
           </Stack.Screen>
         )}
       </Stack.Navigator>
