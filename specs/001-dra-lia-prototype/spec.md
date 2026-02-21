@@ -5,6 +5,12 @@
 **Status**: Draft  
 **Input**: User description: "Build Dra Lia prototype from MVP, architecture and design docs"
 
+## Clarifications
+
+### Session 2026-02-20
+
+- Q: For documents classified as `document_type=other` in discovery, what should be the official behavior? → A: Set status to `failed` with `error_code=document_not_exam` and no retries.
+
 ## User Scenarios & Testing *(mandatory)*
 
 <!--
@@ -76,7 +82,7 @@ As an operator, I can rely on asynchronous workers to process pending documents,
 -->
 
 - Duplicate PDF upload with same SHA-256 for the same user should create a new processing cycle only when explicitly allowed.
-- Discovery returns `document_type=other` and no extraction should run.
+- Discovery returns `document_type=other`; extraction should not run, status must be set to `failed` with `error_code=document_not_exam`, and retries must be skipped.
 - Discovery lists exams but extraction returns fewer exams than discovered.
 - OpenAI API timeout/rate-limit during discovery or extraction.
 - Worker crashes after setting `processing` but before completion.
@@ -102,6 +108,7 @@ As an operator, I can rely on asynchronous workers to process pending documents,
 - **FR-009**: Worker MUST execute discovery and extraction using OpenAI Responses API and persist OpenAI response UUID in `responses`.
 - **FR-010**: Discovery MUST return JSON containing at least `document_type`, `laboratory`, and detected `exams`.
 - **FR-011**: Only documents classified as `exam` in discovery MUST continue to extraction.
+- **FR-011a**: Documents classified as `other` in discovery MUST be finalized with status `failed`, `error_code=document_not_exam`, and no retry scheduling.
 - **FR-012**: Extraction MUST return JSON containing exam rows with date, result value, references, and out-of-range analysis when possible.
 - **FR-013**: On successful processing, system MUST set status `processed`, store raw JSON in `documents`, and populate `exam_items`.
 - **FR-014**: Processing failures MUST be saved in `documents` with error metadata (`error_code`, `error_message`, `retry_count`, `last_failed_at`).
