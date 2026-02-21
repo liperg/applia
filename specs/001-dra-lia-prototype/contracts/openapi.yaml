@@ -1,0 +1,171 @@
+openapi: 3.0.3
+info:
+  title: Dra Lia BFF API
+  version: 0.1.0
+servers:
+  - url: https://api.example.com
+paths:
+  /v1/me:
+    get:
+      summary: Get authenticated user profile
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: User profile
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+  /v1/documents:
+    post:
+      summary: Upload a PDF document
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required: [file]
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '202':
+          description: Document accepted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DocumentSummary'
+    get:
+      summary: List user documents
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: User document list
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [items]
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/DocumentSummary'
+  /v1/documents/{documentId}:
+    get:
+      summary: Get document details and exam items
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: documentId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Document details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DocumentDetail'
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    UserProfile:
+      type: object
+      required: [id, firebaseUid]
+      properties:
+        id:
+          type: string
+          format: uuid
+        firebaseUid:
+          type: string
+        displayName:
+          type: string
+          nullable: true
+        avatarUrl:
+          type: string
+          nullable: true
+
+    DocumentSummary:
+      type: object
+      required: [id, fileName, status, createdAt]
+      properties:
+        id:
+          type: string
+          format: uuid
+        fileName:
+          type: string
+        status:
+          type: string
+          enum: [pending, processing, processed, failed]
+        totalItems:
+          type: integer
+          minimum: 0
+        outOfRangeItems:
+          type: integer
+          minimum: 0
+        createdAt:
+          type: string
+          format: date-time
+
+    ExamItem:
+      type: object
+      required: [name, resultValue, outOfRange]
+      properties:
+        code:
+          type: string
+          nullable: true
+        name:
+          type: string
+        date:
+          type: string
+          format: date
+          nullable: true
+        resultValue:
+          type: string
+        unit:
+          type: string
+          nullable: true
+        referenceRange:
+          type: string
+          nullable: true
+        outOfRange:
+          type: boolean
+        notes:
+          type: string
+          nullable: true
+
+    DocumentDetail:
+      type: object
+      required: [id, fileName, status, examItems]
+      properties:
+        id:
+          type: string
+          format: uuid
+        fileName:
+          type: string
+        status:
+          type: string
+          enum: [pending, processing, processed, failed]
+        laboratory:
+          type: string
+          nullable: true
+        examItems:
+          type: array
+          items:
+            $ref: '#/components/schemas/ExamItem'
