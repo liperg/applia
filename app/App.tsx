@@ -76,11 +76,18 @@ function MainDrawer({ onLogout }: { onLogout: () => void }) {
       />
       <Drawer.Screen
         name="Settings"
-        component={SettingsScreen}
         options={{
           drawerIcon: ({ color, size }) => <Gear size={size ?? iconSizes.navigation} color={color} weight="regular" />,
         }}
-      />
+      >
+        {() => (
+          <SettingsScreen
+            userDisplayName={displayName}
+            onEditProfile={() => {}}
+            onLogout={onLogout}
+          />
+        )}
+      </Drawer.Screen>
     </Drawer.Navigator>
   );
 }

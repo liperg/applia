@@ -55,6 +55,83 @@ Use a centralized token-based palette only.
 - Extract reusable patterns from templates into shared app components.
 - Normalize spacing, colors, and typography to centralized tokens before shipping.
 
+### Unistyles and craftrn-ui
+
+The project **may use** [react-native-unistyles](https://reactnativeunistyles.vercel.app/) and [craftrn-ui](https://docs.craftreactnative.com) components without restriction.
+
+- **Unistyles:** Use for theme-driven styles (e.g. `StyleSheet.create(theme => ({ ... }))`) where templates or screens rely on it. Prefer aligning the Unistyles theme (colors, spacing, typography) with this document’s tokens so the app stays visually consistent.
+- **craftrn-ui:** Use Craft components (e.g. Card, ListItem, Switch, Button, Avatar, BottomSheet, Text) when building from or adapting CraftReactNative templates. Map craftrn-ui theme tokens to this document’s palette and spacing where possible so new screens don’t diverge from the rest of the app.
+- **Coexistence:** Existing app screens may keep using the current theme (`app/src/theme`) and shared components (`app/src/components`). New or refactored screens may adopt Unistyles + craftrn-ui; both approaches are valid. When introducing Unistyles/craftrn-ui, document the choice in the feature or in this file if it becomes the default for new work.
+
+### Copying and setting up CraftReactNative templates
+
+To add [CraftReactNative](https://docs.craftreactnative.com) templates into this project, follow the official [Templates setup guide](https://docs.craftreactnative.com/docs/guides/templates-setup).
+
+**Prerequisites (minimum versions):**
+
+- Expo Router 5+ (or React Navigation; templates work with any navigation)
+- React 19+
+- React Native 0.79+
+- Node.js 22+
+- TypeScript 5.3+
+
+**1. Copy the template files**
+
+- Go to the [craftrn-templates repository](https://github.com/craftreactnative/templates/tree/main/demo-app/craftrn-templates).
+- Download the templates you want.
+- At the **root of this project** (e.g. `d:\dev\applia`), create a folder `craftrn-templates`.
+- Copy the downloaded template folders into `craftrn-templates`.
+
+**2. Set up routes/screens**
+
+- **If using Expo Router:** from the [demo app folder](https://github.com/craftreactnative/templates/tree/main/demo-app/app), copy the folder for the chosen template into this project’s `app` folder so routes match.
+- **If using React Navigation (this app):** import each screen from `craftrn-templates/<template-name>` and wire them into your navigator (e.g. add new stack/drawer screens that render those components). No need to copy into `app`; use the templates as screen components.
+
+**3. Project configuration (when not using Expo defaults)**
+
+- **TypeScript:** if you use path aliases for `@/craftrn-ui`, add to `tsconfig.json` under `compilerOptions`: `"baseUrl": "./app"` and `"paths": { "@/craftrn-ui/*": ["./craftrn-ui/*"] }`.
+- **Babel:** for path aliases and Reanimated, the [docs](https://docs.craftreactnative.com/docs/guides/templates-setup) describe `babel-plugin-root-import` and `react-native-reanimated/plugin`. With Expo, path resolution is usually already handled.
+
+**Target structure (conceptual):**
+
+```
+app/                    # App screens and navigation (React Navigation / Expo)
+  src/
+  ...
+craftrn-templates/      # Copied CraftReactNative template folders
+  discussions/
+  settings/
+  ...
+craftrn-ui/            # If you use Craft UI components (optional)
+  components/
+  themes/
+package.json
+```
+
+After copying templates, continue to follow the **Craft React Native Usage** rules above: adapt visuals to this document’s tokens and centralize any new patterns in shared components.
+
+### AI-assisted template customization
+
+Each CraftReactNative template includes an **AI customization guide** so assistants (e.g. Cursor, Copilot, Claude) can understand the template and give better suggestions. See the official [AI assistant guide](https://docs.craftreactnative.com/docs/guides/templates-ai-assistance).
+
+**What’s in each template folder:**
+
+- **`instructions.md`** – Purpose, architecture, component structure, design system usage, patterns (animations, state, data flow), customization guidelines, API integration examples, performance notes. Share this file with the AI when customizing or extending the template.
+- **`info.json`** – Dependency and metadata for the template. Use together with `instructions.md` for full context.
+
+**How to use with AI:**
+
+1. **Provide context:** When editing a template, reference the template’s `instructions.md`, e.g. `craftrn-templates/AiConversation/instructions.md`. Paste or point the assistant to its content so it follows the template’s patterns.
+2. **Refer to architecture:** The instructions describe component hierarchy, data flow, and conventions; use that to keep new code consistent.
+
+**Example prompts:**
+
+- *Customization:* “I want to add a dark mode toggle to the EditorialFeed template. Here’s the instructions.md: [content]. How do I implement it following the existing patterns?”
+- *New feature:* “From this AI Conversation template’s instructions.md: [content], add image attachments in messages while keeping the current animation patterns.”
+- *Performance:* “Using this Messaging Inbox instructions.md: [content], optimize the list for 10,000+ conversations.”
+
+Using these instruction files leads to more consistent code, fewer mismatches with the template, and better alignment with craftrn-ui and this project’s design tokens.
+
 ## Consistency and Centralization Rules
 
 - All colors, typography, spacing, radii, and shadows must be defined in centralized theme tokens.
