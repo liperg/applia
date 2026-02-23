@@ -44,9 +44,8 @@ export function ExamsScreen({ onAddPress }: ExamsScreenProps) {
   return (
     <ScreenContainer>
       <View style={styles.header}>
-        <Text style={styles.title}>Exams</Text>
         <TouchableOpacity onPress={onAddPress} style={styles.addButton}>
-          <Text style={styles.addLabel}>+ Add</Text>
+          <Text style={styles.addLabel}>+ Add12</Text>
         </TouchableOpacity>
       </View>
       {loading ? (

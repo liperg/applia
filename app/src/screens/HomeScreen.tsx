@@ -29,7 +29,6 @@ export function HomeScreen() {
 
   return (
     <ScreenContainer>
-      <Text style={styles.title}>Home</Text>
       {loading ? (
         <Text style={styles.secondary}>Loading…</Text>
       ) : relevant.length === 0 ? (
