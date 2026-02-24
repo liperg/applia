@@ -118,6 +118,26 @@ export async function getDocument(id: string): Promise<DocumentDetail> {
         outOfRange: false,
         notes: null,
       },
+      {
+        code: 'CREAT',
+        name: 'Creatinine',
+        date: '2025-01-15',
+        resultValue: '1.4',
+        unit: 'mg/dL',
+        referenceRange: '0.7-1.2',
+        outOfRange: true,
+        notes: null,
+      },
+      {
+        code: 'ALT',
+        name: 'ALT',
+        date: '2025-01-15',
+        resultValue: '62',
+        unit: 'U/L',
+        referenceRange: '7-56',
+        outOfRange: true,
+        notes: null,
+      },
     ],
   };
 }
