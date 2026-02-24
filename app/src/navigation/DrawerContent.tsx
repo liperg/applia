@@ -28,7 +28,6 @@ export function DrawerContent(props: Props) {
 
   return (
     <DrawerContentScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
-      {/* Conteúdo da tela de Profile exibido no menu lateral (não é uma tela) */}
       <ProfileContent
         userDisplayName={userDisplayName}
         userEmail={userEmail}
@@ -36,15 +35,11 @@ export function DrawerContent(props: Props) {
         compact
       />
 
-      {/* Opções do menu abaixo do profile */}
       <View style={styles.menu}>
-        <Text style={styles.menuItem} onPress={() => navigation.navigate('Home')}>
-          Home
-        </Text>
-        <Text style={styles.menuItem} onPress={() => navigation.navigate('Exams')}>
-          Exams
-        </Text>
-        <Text style={styles.menuItem} onPress={() => navigation.navigate('Settings')}>
+        <Text
+          style={styles.menuItem}
+          onPress={() => navigation.navigate('Settings')}
+        >
           Settings
         </Text>
       </View>

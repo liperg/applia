@@ -2,29 +2,36 @@ import React from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { createDrawerNavigator } from '@react-navigation/drawer';
-import { OnboardingSignUpScreen } from './src/screens/onboarding/OnboardingSignUpScreen';
+import { createDrawerNavigator, DrawerContentComponentProps } from '@react-navigation/drawer';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { OnboardingScreen } from './src/screens/onboarding/OnboardingScreen';
 import { HomeScreen } from './src/screens/HomeScreen';
 import { ExamsScreen } from './src/screens/ExamsScreen';
 import { ImportScreen } from './src/screens/ImportScreen';
+import { DiscoveryScreen } from './src/screens/DiscoveryScreen';
 import { SettingsScreen } from './src/screens/SettingsScreen';
 import { DrawerContent } from './src/navigation/DrawerContent';
 import { colors, typography, iconSizes } from './src/theme';
-import { House, FileText, Gear } from 'phosphor-react-native';
+import { House, PlusCircle, Compass, Gear } from 'phosphor-react-native';
 import { setAuthToken } from './src/api/client';
 
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
+const Tab = createBottomTabNavigator();
 
 function ExamsStack() {
   return (
-    <Stack.Navigator screenOptions={{ headerShown: true, headerStyle: { backgroundColor: colors.surface }, headerTintColor: colors.textPrimary }}>
-      <Stack.Screen name="ExamsList" options={{ title: 'Exams' }}>
+    <Stack.Navigator
+      screenOptions={{
+        headerShown: false,
+      }}
+    >
+      <Stack.Screen name="ExamsList">
         {({ navigation }) => (
           <ExamsScreen onAddPress={() => navigation.navigate('Import')} />
         )}
       </Stack.Screen>
-      <Stack.Screen name="Import" options={{ title: 'Import PDF' }}>
+      <Stack.Screen name="Import">
         {({ navigation }) => (
           <ImportScreen onDone={() => navigation.goBack()} />
         )}
@@ -33,11 +40,59 @@ function ExamsStack() {
   );
 }
 
+function MainTabs() {
+  return (
+    <Tab.Navigator
+      screenOptions={{
+        headerShown: false,
+        tabBarActiveTintColor: colors.primary,
+        tabBarInactiveTintColor: colors.textSecondary,
+        tabBarLabelStyle: typography.caption,
+        tabBarStyle: { backgroundColor: colors.surface, borderTopColor: colors.border },
+      }}
+    >
+      <Tab.Screen
+        name="Home"
+        component={HomeScreen}
+        options={{
+          title: 'Home',
+          tabBarLabel: 'Home',
+          tabBarIcon: ({ color, size }) => (
+            <House size={size ?? iconSizes.navigation} color={color} weight="regular" />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Exams"
+        component={ExamsStack}
+        options={{
+          title: 'Exams',
+          tabBarLabel: 'Exams',
+          tabBarIcon: ({ color, size }) => (
+            <PlusCircle size={size ?? iconSizes.navigation} color={color} weight="regular" />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Discovery"
+        component={DiscoveryScreen}
+        options={{
+          title: 'Discovery',
+          tabBarLabel: 'Discovery',
+          tabBarIcon: ({ color, size }) => (
+            <Compass size={size ?? iconSizes.navigation} color={color} weight="regular" />
+          ),
+        }}
+      />
+    </Tab.Navigator>
+  );
+}
+
 function MainDrawer({ onLogout }: { onLogout: () => void }) {
   const [displayName] = React.useState<string | null>('Test User');
 
   const CustomDrawerContent = React.useCallback(
-    (drawerProps: any) => (
+    (drawerProps: DrawerContentComponentProps) => (
       <DrawerContent
         {...drawerProps}
         userDisplayName={displayName}
@@ -64,23 +119,20 @@ function MainDrawer({ onLogout }: { onLogout: () => void }) {
       drawerContent={CustomDrawerContent}
     >
       <Drawer.Screen
-        name="Home"
-        component={HomeScreen}
+        name="MainTabs"
+        component={MainTabs}
         options={{
-          drawerIcon: ({ color, size }) => <House size={size ?? iconSizes.navigation} color={color} weight="regular" />,
-        }}
-      />
-      <Drawer.Screen
-        name="Exams"
-        component={ExamsStack}
-        options={{
-          drawerIcon: ({ color, size }) => <FileText size={size ?? iconSizes.navigation} color={color} weight="regular" />,
+          title: 'Dra Lia',
+          drawerItemStyle: { height: 0, margin: 0, padding: 0, display: 'none' },
         }}
       />
       <Drawer.Screen
         name="Settings"
         options={{
-          drawerIcon: ({ color, size }) => <Gear size={size ?? iconSizes.navigation} color={color} weight="regular" />,
+          title: 'Settings',
+          drawerIcon: ({ color, size }: { color: string; size: number }) => (
+            <Gear size={size ?? iconSizes.navigation} color={color} weight="regular" />
+          ),
         }}
       >
         {() => (
@@ -96,29 +148,31 @@ function MainDrawer({ onLogout }: { onLogout: () => void }) {
 }
 
 export default function App() {
+  const [hasCompletedOnboarding, setHasCompletedOnboarding] = React.useState(false);
   const [isLoggedIn, setIsLoggedIn] = React.useState(false);
 
-  const handleSignIn = React.useCallback(() => {
+  const handleOnboardingComplete = React.useCallback(() => {
     setAuthToken('dev-token');
+    setHasCompletedOnboarding(true);
     setIsLoggedIn(true);
   }, []);
 
   const handleLogout = React.useCallback(() => {
     setAuthToken(null);
     setIsLoggedIn(false);
+    setHasCompletedOnboarding(false);
   }, []);
 
   return (
     <NavigationContainer>
       <StatusBar style="dark" />
       <Stack.Navigator screenOptions={{ headerShown: false }}>
-        {!isLoggedIn ? (
-          <Stack.Screen name="OnboardingSignUp">
-            {() => (
-              <OnboardingSignUpScreen
-                onContinueWithPhone={() => handleSignIn()}
-                onContinueWithGoogle={handleSignIn}
-                onContinueWithApple={handleSignIn}
+        {!hasCompletedOnboarding ? (
+          <Stack.Screen name="Onboarding">
+            {(props) => (
+              <OnboardingScreen
+                {...props}
+                onComplete={handleOnboardingComplete}
               />
             )}
           </Stack.Screen>
